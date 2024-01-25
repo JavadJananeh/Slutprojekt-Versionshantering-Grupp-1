@@ -9,6 +9,7 @@ import {
   register,
   postMessage,
   getMessages,
+  deleteAllMessages,
 } from "./modules/fetch.js";
 
 const messageFieldDiv = document.querySelector("#messageFieldDiv");
@@ -38,6 +39,7 @@ registerSwitch.addEventListener("click", registerSwitcher);
 loginSwitch.addEventListener("click", loginSwitcher);
 function registerSwitcher(event) {
   event.preventDefault();
+  addClassToElement([footer], "footerPosition");
   addClassToElement([logIn, loginForm], "hide");
   removeClassToElement([createAccount, registerForm], "hide");
 }
@@ -45,6 +47,7 @@ function loginSwitcher(event) {
   event.preventDefault();
   addClassToElement([createAccount, registerForm], "hide");
   removeClassToElement([logIn, loginForm], "hide");
+  removeClassToElement([footer], "footerPosition");
 }
 
 // Submit för login och register form
@@ -57,18 +60,24 @@ function loginHandler(event) {
 
 registerForm.addEventListener("submit", registerHandler);
 function registerHandler(event) {
+  const password = document.querySelector("#registerPassword").value;
+  const confirmPassword = document.querySelector(
+    "#confirmRegisterPassword"
+  ).value;
   event.preventDefault();
+  if (confirmPassword !== password) return alert("Password is not the same!");
 
+  registerSwitcher(event);
   const username = document
     .querySelector("#registerUsername")
     .value.toLowerCase();
-  const password = document.querySelector("#registerPassword").value;
 
   register(username, password);
 
   addClassToElement([webName], "hideMobile");
   addClassToElement([frontPage], "hide");
   removeClassToElement([mainPage, navBar], "hide");
+  removeClassToElement([footer], "footerPosition");
 
   registerForm.reset();
 }
@@ -109,10 +118,12 @@ document.querySelectorAll("#nav a").forEach((menuLink) => {
           [mainPage, registerForm, createAccount, navBar],
           "hide"
         );
+
         removeClassToElement([homePage, frontPage, loginForm, logIn], "hide");
         removeClassToElement([webName], "hideMobile");
         removeClassToElement([footer], "footerPosition");
         closeHamburgerMenuInHamburgerMenu();
+        deleteAllMessages();
         break;
     }
   });
@@ -144,7 +155,7 @@ function displayMessage(message) {
     let messageDiv = document.createElement("div");
     let messagePara = (document.createElement("p").innerText =
       message[key].text);
-    let messageUserName = (document.createElement("p").innerText = "username");
+    let messageUserName = (document.createElement("p").innerText = "Spy");
 
     addClassToElement([messageDiv], "message");
     messageDiv.append(messagePara);
