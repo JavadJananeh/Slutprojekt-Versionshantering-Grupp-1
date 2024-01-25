@@ -129,6 +129,18 @@ document.querySelectorAll("#nav a").forEach((menuLink) => {
   });
 });
 
+// Anne-lie: Here is code for mute button
+const muteBtn = document.querySelector("#muteBtn");
+let isSoundMuted = false;
+
+muteBtn.addEventListener("click", () => {
+  isSoundMuted = !isSoundMuted;
+  muteBtn.innerHTML = isSoundMuted
+    ? '<i class="fa-solid fa-volume-xmark"></i>'
+    : '<i class="fa-solid fa-volume-high"></i>';
+});
+// Anne-lie: mute button ends
+
 //Send message
 document
   .querySelector("#sendMessageButton")
@@ -138,7 +150,11 @@ document
     let messageInput = document.querySelector("#secretMessageInput").value;
 
     const coolSound = new Audio("./sounds/snare-112754.mp3");
-    coolSound.play();
+    // Anne-lie:mute button
+    if (!isSoundMuted) {
+      coolSound.play();
+    }
+    // Anne-lie: mute button
 
     // Ton grupp 3 feature start//
     postMessage(messageInput).then(getMessages).then(displayMessage);
@@ -152,10 +168,15 @@ function displayMessage(message) {
   messageFieldDiv.innerHTML = "";
   for (const key in message) {
     console.log(message[key].text);
+
+    // Angelica 13:37 elit spy
+    const date = new Date(message[key].time);
+    const time = `${date.getHours()}:${date.getMinutes()}`;
     let messageDiv = document.createElement("div");
     let messagePara = (document.createElement("p").innerText =
       message[key].text);
-    let messageUserName = (document.createElement("p").innerText = "Spy");
+    let messageUserName = (document.createElement("p").innerText =
+      time === "13:37" ? "Elite Spy" : "Spy");
 
     addClassToElement([messageDiv], "message");
     messageDiv.append(messagePara);
@@ -181,7 +202,27 @@ document.querySelector(".hamburgerMenu").addEventListener("click", (event) => {
 });
 
 // Contact funktion
+// document.querySelector("#contactButton").addEventListener("click", (event) => {
+//   event.preventDefault();
+//   contactForm.reset();
+// });
+
+// Kamy grupp 4 contact form feature //
+
 document.querySelector("#contactButton").addEventListener("click", (event) => {
   event.preventDefault();
+  let dialog = document.querySelector("#popupWrapper");
+  dialog.showModal();
+  dialog.style.display = "flex";
+  document.querySelector("#popupOly").style.display = "block";
+});
+
+document.querySelector("#closeBtn").addEventListener("click", (event) => {
+  event.preventDefault();
+  let dialog = document.querySelector("#popupWrapper");
+  dialog.close();
+  dialog.style.display = "none";
+  let popUpBack = document.querySelector("#popupOly");
+  popUpBack.style.display = "none";
   contactForm.reset();
 });
